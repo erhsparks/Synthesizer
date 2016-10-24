@@ -3,30 +3,32 @@ import { NOTE_NAMES, TONES } from '../../util/tones';
 import Note from '../../util/note';
 import $ from 'jquery';
 
-
 export default class Synth extends React.Component {
   constructor(props) {
     super(props);
     this.notes = NOTE_NAMES.map(key => new Note(TONES[key]));
-    this.keyPressed = props.keyPressed;
-    this.keyReleased = props.keyReleased;
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.playNotes = this.playNotes.bind(this);
   }
 
-  onKeyDown(event) {
-    this.keyPressed(event.key);
-  }
+  render () {
+    const notes = this.notes.map((note, idx) => (
+      <li key={idx}
+        onKeyDown={this.onKeyDown}
+        onKeyUp={this.onKeyUp}>
+        {NOTE_NAMES[idx]}
+      </li>
+    ));
 
-  onKeyUp(event) {
-    this.keyReleased(event.key);
-  }
+    this.playNotes();
 
-  componentDidMount() {
-    $(document).on('keydown', e => this.onKeyDown(e));
-    $(document).on('keyup', e => this.onKeyUp(e));
+    return (
+      <section>
+        <ul>{notes}</ul>
+      </section>
+    );
   }
 
   playNotes() {
@@ -40,21 +42,16 @@ export default class Synth extends React.Component {
     });
   }
 
-  render () {
-    const notes = this.notes.map((note, idx) => (
-      <li key={idx}
-          onKeyDown={this.onKeyDown}
-          onKeyUp={this.onKeyUp}>
-            {NOTE_NAMES[idx]}
-      </li>
-    ));
+  onKeyDown(event) {
+    this.props.keyPressed(event.key);
+  }
 
-    this.playNotes();
+  onKeyUp(event) {
+    this.props.keyReleased(event.key);
+  }
 
-    return (
-      <section>
-        <ul>{notes}</ul>
-      </section>
-    );
+  componentDidMount() {
+    $(document).on('keydown', e => this.onKeyDown(e));
+    $(document).on('keyup', e => this.onKeyUp(e));
   }
 }
