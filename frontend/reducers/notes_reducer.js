@@ -20,15 +20,18 @@ const noteValid = key => (
 
 const notesReducer = (oldState = _defaultState, action) => {
   Object.freeze(oldState);
+  let newState;
 
   if (!noteValid(action.key)) return oldState;
-
+  
   switch (action.type) {
     case KEY_PRESSED:
-      return union(oldState, action.key);
+      newState = union(oldState, [action.key]);
+      return newState;
     case KEY_RELEASED:
-      let newState = merge([], oldState);
-      return releaseKey(newState, action.key);
+      newState = merge([], oldState);
+      newState = releaseKey(newState, action.key);
+      return newState;
     default:
       return oldState;
   }
