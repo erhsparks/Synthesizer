@@ -29,7 +29,8 @@ export default class Synth extends React.Component {
       return (
         <li key={idx}
             onKeyDown={this.onKeyDown}
-            onKeyUp={this.onKeyUp}>
+            onKeyUp={this.onKeyUp}
+            className="synth-li">
               <NoteKey note={NOTE_NAMES[idx]} pressed={pressed} />
         </li>
       );
@@ -37,7 +38,7 @@ export default class Synth extends React.Component {
 
     return (
       <section>
-        <ul>{notesList}</ul>
+        <ul className="synth-ul">{notesList}</ul>
       </section>
     );
   }
