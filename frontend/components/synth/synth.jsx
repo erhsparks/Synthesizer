@@ -1,7 +1,9 @@
 import React from 'react';
+import $ from 'jquery';
+
 import { NOTE_NAMES, TONES } from '../../util/tones';
 import Note from '../../util/note';
-import $ from 'jquery';
+import NoteKey from './note_key';
 
 export default class Synth extends React.Component {
   constructor(props) {
@@ -14,19 +16,28 @@ export default class Synth extends React.Component {
   }
 
   render () {
-    const notes = this.notes.map((note, idx) => (
-      <li key={idx}
-        onKeyDown={this.onKeyDown}
-        onKeyUp={this.onKeyUp}>
-        {NOTE_NAMES[idx]}
-      </li>
-    ));
-
     this.playNotes();
+
+    const { notes } = this.props;
+    const propFreqs = notes.map(note => (TONES[note]));
+
+    const notesList = this.notes.map((note, idx) => {
+      const freq = note.oscillatorNode.frequency.value.toFixed(2);
+      let pressed = false;
+      if (propFreqs.includes(Number(freq))) pressed = true;
+
+      return (
+        <li key={idx}
+            onKeyDown={this.onKeyDown}
+            onKeyUp={this.onKeyUp}>
+              <NoteKey note={NOTE_NAMES[idx]} pressed={pressed} />
+        </li>
+      );
+    });
 
     return (
       <section>
-        <ul>{notes}</ul>
+        <ul>{notesList}</ul>
       </section>
     );
   }
